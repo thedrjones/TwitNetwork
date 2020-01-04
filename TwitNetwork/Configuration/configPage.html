@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>twit.tv next</title>
+</head>
+<body>
+    <div id="twitNetworkConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage TwitNetworkConfigurationPage" data-require="emby-input,emby-button">
+        <div data-role="content">
+            <div class="content-primary">
+                <div class="sectionTitleContainer flex align-items-center">
+                    <h2 class="sectionTitle">TWiT.tv API Configuration</h2>
+                    <a is="emby-linkbutton" class="raised button-alt headerHelpButton emby-button" target="_blank" href="https://twit.tv/about/developer-program">TWiT Developer Program</a>
+                </div>
+
+                <form class="TwitNetworkConfigurationForm">
+                    <p style="margin:2em 0;">
+                        In order to use this plugin, you will need to set up your own access account for the TWiT API at 3scale.
+                        Please see above link for more information, they tend to be reasonably quick in allowing access.
+                        There is currently no charge to use the TWiT API, although it is rate limited to 5 requests per minute.
+                    </p>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtAppID">Application ID:</label>
+                        <input type="text" is="emby-input" id="txtAppID" label="Application ID:" class="emby-input" />
+                        <div class="fieldDescription">
+                            A valid <em>twit.tv</em> API application ID from 3scale.
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtAppKey">Application Key:</label>
+                        <input type="text" is="emby-input" id="txtAppKey" label="Application Key:" class="emby-input" />
+                        <div class="fieldDescription">
+                            A valid <em>twit.tv</em> API application key from 3scale.
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtEpisodeDays">Days for Download:</label>
+                        <input type="text" is="emby-input" id="txtEpisodeDays" label="Days for Download:" class="emby-input" />
+                        <div class="fieldDescription">
+                            This will limit the episodes collected to only include the shows premiered in the last X days. The default is 90 days.
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtRateLimit">Rate Limit Per Minute:</label>
+                        <input type="text" is="emby-input" id="txtRateLimit" label="Rate Limit Per Minute:" class="emby-input" />
+                        <div class="fieldDescription">
+                            The TWiT API account can limit the number of requests serviced per minute. This is 5 at the moment.
+                        </div>
+                    </div>
+                    <label class="checkboxContainer">
+                        <input is="emby-checkbox" type="checkbox" id="chkDebugLogging" />
+                        <span>Enable request debug logging</span>
+                    </label>
+
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>Save</span></button>
+
+                    <p style="margin:2em 0;">
+                        The TWiT.TV plugin will automatically update the show list from the TWiT API every week. This can take a little time. <br />
+                        If needed, you may force a refresh of the available show list via the below button.
+                    </p>
+                    <div>
+                        <button is="emby-button" type="button" class="raised button-cancel block emby-button" onclick="TwitNetworkConfigurationPage.RefreshShowList();">Refresh Show List</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var TwitNetworkConfigurationPage = {
+                pluginUniqueId: "137437c9-3e1d-4d02-bd83-7025848d81fd",
+
+                RefreshShowList: function () {
+                    Dashboard.showLoadingMsg();
+                    //TODO: Refresh things
+                    Dashboard.hideLoadingMsg();
+                    Dashboard.alert("Refreshed Show List.");
+                }
+            };
+
+            $('.TwitNetworkConfigurationPage').on('pageshow', function (event) {
+
+                Dashboard.showLoadingMsg();
+
+                var page = this;
+
+                ApiClient.getPluginConfiguration(TwitNetworkConfigurationPage.pluginUniqueId).then(function (config) {
+
+                    $('#txtAppID', page).val(config.AppID || "");
+                    $('#txtAppKey', page).val(config.AppKey || "");
+                    $('#txtRateLimit', page).val(config.LimitRequestsPerMinute || "");
+                    $('#txtEpisodeDays', page).val(config.LimitCollectionInDays || "");
+                    page.querySelector('#chkDebugLogging').checked = config.EnableDebugLogging || false;
+
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            $('.TwitNetworkConfigurationForm').on('submit', function (e) {
+
+                Dashboard.showLoadingMsg();
+
+                var form = this;
+
+                ApiClient.getPluginConfiguration(TwitNetworkConfigurationPage.pluginUniqueId).then(function (config) {
+                    config.AppID = $('#txtAppID', form).val();
+                    config.AppKey = $('#txtAppKey', form).val();
+                    config.LimitRequestsPerMinute = $('#txtRateLimit', form).val();
+                    config.LimitCollectionInDays = $('#txtEpisodeDays', form).val();
+                    config.EnableDebugLogging = form.querySelector('#chkDebugLogging').checked;
+
+                    ApiClient.updatePluginConfiguration(TwitNetworkConfigurationPage.pluginUniqueId, config).then(Dashboard.processPluginConfigurationUpdateResult);
+                });
+
+                // Disable default form submission
+                return false;
+            });
+        </script>
+    </div>
+</body>
+</html>
