@@ -14,9 +14,10 @@
 
                 <form class="TwitNetworkConfigurationForm">
                     <p style="margin:2em 0;">
-                        In order to use this plugin, you will need to set up your own access account for the TWiT API at 3scale.
-                        Please see above link for more information, they tend to be reasonably quick in allowing access.
-                        There is currently no charge to use the TWiT API, although it is rate limited to 5 requests per minute.
+                        In order to use the TWiT API, you should set up your own access account for the TWiT API at 3scale.
+                        Please see above link for more information, they tend to be reasonably quick in allowing access.<br/>
+                        There is no charge to use the TWiT API as it stands, although it is rate limited to 5 requests per minute.<br/>
+                        Hopefully in the end we may be able to use one application key for all of the Emby userbase, but need to get TWiT to increase the limits I think.
                     </p>
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="txtAppID">Application ID:</label>
@@ -36,14 +37,17 @@
                         <label class="inputLabel inputLabelUnfocused" for="txtEpisodeDays">Days for Download:</label>
                         <input type="text" is="emby-input" id="txtEpisodeDays" label="Days for Download:" class="emby-input" />
                         <div class="fieldDescription">
-                            This will limit the episodes collected to only include the shows premiered in the last X days. The default is 90 days.
+                            This will limit the episodes collected to only include the shows premiered in the last X days. I would not exceed 45 days, but I have tested more.<br/>
+                            Over time I hope to extend my caching so that you can keep old acquires in play in the cache which will limit the number of days you need to collect 
+                            each time, but still learning the plugin ropes, so not just yet.
                         </div>
                     </div>
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="txtRateLimit">Rate Limit Per Minute:</label>
                         <input type="text" is="emby-input" id="txtRateLimit" label="Rate Limit Per Minute:" class="emby-input" />
                         <div class="fieldDescription">
-                            The TWiT API account can limit the number of requests serviced per minute. This is 5 at the moment.
+                            The TWiT API account can limit the number of requests serviced per minute. I would recommend no more than 5 at the moment, as TWiT's default is 5 calls in a minute.
+                            The TWiT API collection code will handle all of the resting and queuing of calls to respect this limit. We get 25 episode and their associated meta-data per call.
                         </div>
                     </div>
                     <label class="checkboxContainer">
@@ -53,13 +57,14 @@
 
                     <button is="emby-button" type="submit" class="raised button-submit block"><span>Save</span></button>
 
-                    <p style="margin:2em 0;">
+                    <!--- Unused code, but might be useful one day
+                        <p style="margin:2em 0;">
                         The TWiT.TV plugin will automatically update the show list from the TWiT API every week. This can take a little time. <br />
                         If needed, you may force a refresh of the available show list via the below button.
                     </p>
                     <div>
                         <button is="emby-button" type="button" class="raised button-cancel block emby-button" onclick="TwitNetworkConfigurationPage.RefreshShowList();">Refresh Show List</button>
-                    </div>
+                    </div> --->
                 </form>
             </div>
         </div>
