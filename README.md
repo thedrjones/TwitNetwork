@@ -1,9 +1,13 @@
 # TwitNetwork
 A Emby Server plugin using the TWiT API to access links for all the TWiT Network podcasts
 
-You will currently need to bring you own key. See https://twit.tv/about/developer-program for details.
+You will currently need to bring you own API key. See https://twit.tv/about/developer-program for details.
+
+While software development is what I do for a living, my C# is not stunning as it isn't my "daily driver" language. Emby plugin development is new to me, this was initially written in a few days.
+
 I would not recommend calling for more than 45 days of content, of course you can call more, but more info in next point.
 The standard TWiT API is limited to 5 requests per minute and so is the default configuration. Therefore the plugin will wait a minute before calling it again. 
+
 As you ask for more shows, the time to make all the calls increases. We get 25 episodes per API call, along with their associated metadata. This will collect on the internet channels scheduled job,so you might not notice it much.
 
 This is only the basic functionaity for the moment. Here is a taster of future changes:
