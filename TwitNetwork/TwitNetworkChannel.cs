@@ -137,6 +137,15 @@ namespace TwitNetwork
         public async Task<ChannelItemResult> GetChannelItems(InternalChannelItemQuery query, CancellationToken cancellationToken)
         {
             _logger.Debug("In GetChannelItems");
+            if (Plugin.Instance.Configuration.AppID == "app-id-goes-here" || Plugin.Instance.Configuration.AppKey == "app-key-goes-here")
+            {
+                _logger.Warn("The Application has not been set up correctly in the configuration screen.");
+                _logger.Info("Cannot populate channel data due to configuration issue.");
+                ChannelItemResult channelItemResult = new ChannelItemResult();
+                channelItemResult.Items = new List<ChannelItemInfo>();
+                channelItemResult.TotalRecordCount = 0;
+                return channelItemResult;
+            }
 
             var downloader = new TwitNetworkDownloader(_logger, _jsonSerializer, _httpClient);
             var cacheOk = await downloader.PopulateNetworkCache(
